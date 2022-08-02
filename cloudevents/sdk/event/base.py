@@ -165,12 +165,12 @@ class BaseEvent(EventGetterSetter):
     _ce_optional_fields = set()
 
     def Properties(self, with_nullable=False) -> dict:
-        props = dict()
+        props = {}
         for name, value in self.__dict__.items():
             if str(name).startswith("ce__"):
                 v = value.get()
                 if v is not None or with_nullable:
-                    props.update({str(name).replace("ce__", ""): value.get()})
+                    props[str(name).replace("ce__", "")] = value.get()
 
         return props
 
@@ -186,8 +186,7 @@ class BaseEvent(EventGetterSetter):
 
     def Set(self, key: str, value: object):
         formatted_key = "ce__{0}".format(key)
-        key_exists = hasattr(self, formatted_key)
-        if key_exists:
+        if key_exists := hasattr(self, formatted_key):
             attr = getattr(self, formatted_key)
             attr.set(value)
             setattr(self, formatted_key, attr)
@@ -292,9 +291,11 @@ class BaseEvent(EventGetterSetter):
             headers["content-type"] = self.ContentType()
         props = self.Properties()
         for key, value in props.items():
-            if key not in ["data", "extensions", "datacontenttype"]:
-                if value is not None:
-                    headers["ce-{0}".format(key)] = value
+            if (
+                key not in ["data", "extensions", "datacontenttype"]
+                and value is not None
+            ):
+                headers["ce-{0}".format(key)] = value
 
         for key, value in props.get("extensions").items():
             headers["ce-{0}".format(key)] = value

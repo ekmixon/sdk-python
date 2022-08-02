@@ -40,7 +40,7 @@ class Event(base.BaseEvent):
         self.ce__time = opt.Option("time", None, False)
         self.ce__schemaurl = opt.Option("schemaurl", None, False)
         self.ce__data = opt.Option("data", None, False)
-        self.ce__extensions = opt.Option("extensions", dict(), False)
+        self.ce__extensions = opt.Option("extensions", {}, False)
 
     def CloudEventVersion(self) -> str:
         return self.ce__specversion.get()

@@ -71,9 +71,7 @@ app = Sanic(__name__)
 
 @app.route("/event", ["POST"])
 async def echo(request):
-    decoder = None
-    if "binary-payload" in request.headers:
-        decoder = lambda x: x
+    decoder = (lambda x: x) if "binary-payload" in request.headers else None
     event = from_http(
         dict(request.headers), request.body, data_unmarshaller=decoder
     )
@@ -268,7 +266,7 @@ def test_binary_to_request(specversion):
     for key in data:
         assert body[key] == data[key]
     for key in attributes:
-        assert attributes[key] == headers["ce-" + key]
+        assert attributes[key] == headers[f"ce-{key}"]
 
 
 @pytest.mark.parametrize("specversion", ["1.0", "0.3"])

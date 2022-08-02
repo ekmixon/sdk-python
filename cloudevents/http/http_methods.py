@@ -44,7 +44,7 @@ def from_http(
     marshall = marshaller.NewDefaultHTTPMarshaller()
 
     if is_binary(headers):
-        specversion = headers.get("ce-specversion", None)
+        specversion = headers.get("ce-specversion")
     else:
         try:
             raw_ce = json.loads(data)
@@ -81,12 +81,7 @@ def from_http(
     attrs.pop("extensions", None)
     attrs.update(**event.extensions)
 
-    if event.data == "" or event.data == b"":
-        # TODO: Check binary unmarshallers to debug why setting data to ""
-        # returns an event with data set to None, but structured will return ""
-        data = None
-    else:
-        data = event.data
+    data = None if event.data in ["", b""] else event.data
     return CloudEvent(attrs, data)
 
 

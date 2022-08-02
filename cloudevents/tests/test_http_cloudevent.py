@@ -60,9 +60,8 @@ def test_http_cloudevent_mutates_equality(specversion):
     for key in attributes:
         if key == "specversion":
             continue
-        else:
-            event2[key] = f"noise-{key}"
-            event3[key] = f"noise-{key}"
+        event2[key] = f"noise-{key}"
+        event3[key] = f"noise-{key}"
         assert event2 == event3
         assert event1 != event2 and event3 != event1
 
@@ -84,12 +83,12 @@ def test_cloudevent_missing_minimal_required_fields():
     attributes = {"type": "t"}
     with pytest.raises(cloud_exceptions.MissingRequiredFields) as e:
         _ = CloudEvent(attributes, None)
-    assert f"Missing required keys: {set(['source'])}" in str(e.value)
+    assert f"Missing required keys: {{'source'}}" in str(e.value)
 
     attributes = {"source": "s"}
     with pytest.raises(cloud_exceptions.MissingRequiredFields) as e:
         _ = CloudEvent(attributes, None)
-    assert f"Missing required keys: {set(['type'])}" in str(e.value)
+    assert f"Missing required keys: {{'type'}}" in str(e.value)
 
 
 def test_cloudevent_general_overrides():

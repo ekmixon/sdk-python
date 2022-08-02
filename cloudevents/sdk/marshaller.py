@@ -32,7 +32,7 @@ class HTTPMarshaller(object):
         :param converters: a list of HTTP-to-CloudEvent-to-HTTP constructors
         :type converters: typing.List[base.Converter]
         """
-        self.http_converters = [c for c in converters]
+        self.http_converters = list(converters)
         self.http_converters_by_type = {c.TYPE: c for c in converters}
 
     def FromRequest(
@@ -60,7 +60,7 @@ class HTTPMarshaller(object):
 
         # Lower all header keys
         headers = {key.lower(): value for key, value in headers.items()}
-        content_type = headers.get("content-type", None)
+        content_type = headers.get("content-type")
 
         for cnvrtr in self.http_converters:
             if cnvrtr.can_read(
